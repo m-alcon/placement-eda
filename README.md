@@ -1,1 +1,1 @@
-# placement-eda
+# Placement solver for Electronic Design Automation
