@@ -1,17 +1,17 @@
 CXX  = g++ -std=c++11
-OBJ = ../bin/
+OBJ = ./
 BIN = ../bin/
 
 SRC = $(wildcard *.cc)
 TAR = $(SRC:.cc=.o)
 
-.PHONY: all clean
+.PHONY: all program
 
 all: $(TAR)
-    $(CXX) -c $^ -o $(OBJ)$@
+	$(CXX) -o $(BIN)placement $^
     
 %.o: %.cc
-    $(CXX) -c $^ -o $(OBJ)$@
+	$(CXX) -c $^ -o $@
 
 clean:
-    rm -rf $(OBJ)*.o $(TAR)
+	rm -rf $(OBJ)*.o $(BIN)*
