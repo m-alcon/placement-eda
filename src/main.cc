@@ -1,6 +1,7 @@
-#include "util.h"
+#include "circuit.h"
 
 int main () {
-    parse(cin);
+    Circuit c = Circuit(cin);
+    c.print(cout);
     return 0;
 }

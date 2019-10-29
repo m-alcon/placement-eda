@@ -10,7 +10,9 @@ class Circuit {
         Circuit (const uint &n_nodes)   
             : n(n_nodes), 
               adjacency(n_nodes, Vector (n_nodes)) {}
+        Circuit (istream &input);
+        void print(ostream &output);
     private:
-        uint n;
+        uint n, w, h;
         Matrix adjacency;
 };

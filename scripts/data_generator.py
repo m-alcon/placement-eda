@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import argparse
 import sys
 
@@ -5,7 +7,21 @@ def print_warning(message):
     print("WARR: %s"%message)
 
 def generate_spiral(w,h):
-    n, graph = 0, []
+    n, graph = w*h, [[] for x in range(w*h)]
+    for i in range(h):
+        if i%2 == 0:
+            order = range(w)
+            operation = 1
+        else:
+            order = reversed(range(w))
+            operation = -1
+        for j in order:
+            u = i*w + j
+            v = j + operation
+            if v >= 0 and v < w:
+                graph[u].append(str(v + i*w))
+            elif i+1 < h:
+                graph[u].append(str((i+1)*w + j))
     return n, graph
 
 def generate_mesh(w,h):
@@ -38,6 +54,8 @@ if __name__ == "__main__":
         print("Non-defined graph type.")
         sys.exit()
 
-    with open("data/problem_%d_%dx%d.dat"%(n, w, h), "w") as file:
+    with open("data/problem_%s_%d_%dx%d.dat"%(t, n, w, h), "w") as file:
         file.write("%d\n"%n)
         file.write("%d %d\n"%(w, h))
+        for r in graph:
+            file.write(str(len(r))+" "+" ".join(r)+"\n")
