@@ -12,6 +12,7 @@ class Circuit {
               adjacency(n_nodes, Vector (n_nodes)) {}
         Circuit (istream &input);
         void print(ostream &output);
+        void graphviz(ostream &output);
     private:
         uint n, w, h;
         Matrix adjacency;

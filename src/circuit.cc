@@ -15,16 +15,20 @@ Circuit::Circuit (istream &input) {
 }
 
 void Circuit::print(ostream &output) {
-    // for (int i = 0; i < n; ++i) {
-    //     for (int j = 0; j < adjacency[i].size(); ++j) {
-    //         output << adjacency[i][j] << " ";
-    //     }
-    //     output << endl;
-    // }
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < adjacency[i].size(); ++j) {
+            output << adjacency[i][j] << " ";
+        }
+        output << endl;
+    }
+}
+
+void Circuit::graphviz(ostream &output) {
     output << "graph G {" << endl << "\tnode[pin=true];" << endl;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < adjacency[i].size(); ++j) {
-            output << "\t" << i << " -> " << adjacency[i][j] << ";" << endl;
+            if (i <= adjacency[i][j])
+                output << "\t" << i << " -- " << adjacency[i][j] << ";" << endl;
         }
     }
 
