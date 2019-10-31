@@ -2,6 +2,8 @@
 #include <vector>
 using namespace std;
 
+#define DIMS 2
+
 typedef vector<int> Vector;
 typedef vector<Vector> Matrix;
 
@@ -15,5 +17,5 @@ class Circuit {
         void graphviz(ostream &output);
     private:
         uint n, w, h;
-        Matrix adjacency;
+        Matrix adjacency, positions;
 };

@@ -2,13 +2,16 @@
 
 Circuit::Circuit (istream &input) {
     int m, v;
-    cin >> n >> w >> h;
+    input >> n >> w >> h;
     adjacency = Matrix(n);
+    positions = Matrix(n, Vector(DIMS));
     for (int i = 0; i < n; ++i) {
-        cin >> m;
+        for (int d = 0; d < DIMS; ++d)
+            input >> positions[i][d];
+        input >> m;
         adjacency[i] = Vector(m);
         for (int j = 0; j < m; ++j) {
-            cin >> v;
+            input >> v;
             adjacency[i][j] = v;
         }
     }
@@ -16,6 +19,7 @@ Circuit::Circuit (istream &input) {
 
 void Circuit::print(ostream &output) {
     for (int i = 0; i < n; ++i) {
+        output << "n: " << n << " i: "<< i << endl;
         for (int j = 0; j < adjacency[i].size(); ++j) {
             output << adjacency[i][j] << " ";
         }
