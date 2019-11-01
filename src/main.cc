@@ -2,6 +2,6 @@
 
 int main () {
     Circuit c = Circuit(cin);
-    c.print(cout);
+    c.graphviz(cout);
     return 0;
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./bin/placement < ./data/problem_spiral_15_3x5.dat
+./bin/placement < ./data/problem_random_50_10x10.dat

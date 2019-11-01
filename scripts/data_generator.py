@@ -11,7 +11,7 @@ def print_error (message):
     print("ERROR: %s"%message)
 
 def all_positions(w, h):
-    return [i*w + j for j in range(w) for i in range(h)]
+    return [(i,j) for j in range(w) for i in range(h)]
 
 def generate_spiral(w, h):
     n, graph, positions = w*h, [[] for x in range(w*h)], [[] for x in range(w*h)]
@@ -51,15 +51,17 @@ def generate_mesh(w, h):
 def generate_random(w, h, n):
     if not n:
         n = w*h
-    matrix, positions = np.zeros((n,n)), []
-    p = 0.5
+    graph, matrix, positions = [], np.zeros((n,n)), []
+    p = 1/n
     for i in range(n):
         for j in range(n):
-            matrix[i][j] = np.random.choice([False,True], 1, p=[1-p, p])
-    positions = np.random.choice(all_positions(w,h),n)
+            if i == j: continue
+            matrix[i][j] = np.random.choice([0,1], 1, p=[1-p, p])
+    positions = all_positions(w,h)
+    np.random.shuffle(positions)
     for i in range(n):
-        graph[i] = [j for j in range(matrix[i]) if matrix[i][j]]
-    return n, graph, positions
+        graph.append([str(j) for j in range(n) if matrix[i][j]])
+    return n, graph, positions[:n]
 
 
 if __name__ == "__main__":

@@ -6,9 +6,7 @@ Circuit::Circuit (istream &input) {
     adjacency = Matrix(n);
     positions = Matrix(n, Vector(DIMS));
     for (int i = 0; i < n; ++i) {
-        for (int d = 0; d < DIMS; ++d)
-            input >> positions[i][d];
-        input >> m;
+        input >> positions[i][0] >> positions[i][1] >> m;
         adjacency[i] = Vector(m);
         for (int j = 0; j < m; ++j) {
             input >> v;
@@ -19,7 +17,6 @@ Circuit::Circuit (istream &input) {
 
 void Circuit::print(ostream &output) {
     for (int i = 0; i < n; ++i) {
-        output << "n: " << n << " i: "<< i << endl;
         for (int j = 0; j < adjacency[i].size(); ++j) {
             output << adjacency[i][j] << " ";
         }
@@ -35,11 +32,9 @@ void Circuit::graphviz(ostream &output) {
                 output << "\t" << i << " -- " << adjacency[i][j] << ";" << endl;
         }
     }
-
-    for (int i = 0; i < h; ++i) {
-        for (int j = 0; j < w; ++j) {
-            output << "\t" << i*w + j << " [pos=\"" << j << "," << -i << "\"];" << endl;
-        }
+    for (int i = 0; i < n; ++i) {
+        output << "\t" << i << " [pos=\"" << positions[i][1];
+        output << "," << -positions[i][0] << "\"];" << endl;
     }
     output << "}" << endl;
 }
