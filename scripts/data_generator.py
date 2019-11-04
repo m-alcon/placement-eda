@@ -9,6 +9,7 @@ def print_warning (message):
 
 def print_error (message):
     print("ERROR: %s"%message)
+    sys.exit()
 
 def all_positions(w, h):
     return [(i,j) for j in range(w) for i in range(h)]
@@ -51,17 +52,20 @@ def generate_mesh(w, h):
 def generate_random(w, h, n):
     if not n:
         n = w*h
-    graph, matrix, positions = [], np.zeros((n,n)), []
+    graph, matrix= [], np.zeros((n,n))
     p = 1/n
     for i in range(n):
         for j in range(n):
             if i == j: continue
             matrix[i][j] = np.random.choice([0,1], 1, p=[1-p, p])
-    positions = all_positions(w,h)
-    np.random.shuffle(positions)
     for i in range(n):
         graph.append([str(j) for j in range(n) if matrix[i][j]])
-    return n, graph, positions[:n]
+    # positions = all_positions(w,h)
+    # np.random.shuffle(positions)
+    return n, graph #, positions[:n]
+
+def generate_geometric(w, h, n):
+    return n, []
 
 
 if __name__ == "__main__":
@@ -73,7 +77,7 @@ if __name__ == "__main__":
     #parser.add_argument("-f","--file", help="")
     args = parser.parse_args()
     n, w, h, t = args.ncells, args.width, args.height, args.type
-    graph = []
+    graph, positions = [], []
     if t == "spiral":
         if n: print_warning("Parameter NCELLS is not going to be used.")
         n, graph, positions = generate_spiral(w, h)
@@ -82,19 +86,24 @@ if __name__ == "__main__":
         n, graph, positions = generate_mesh(w, h)
     elif t == "random":
         if n <= w*h:
-            n, graph, positions = generate_random(w, h, n)
+            n, graph = generate_random(w, h, n)
         else:
             print_error("Not enough space for all the nodes (width*heigt < NCELLS).")
-        print("random")
-    elif t == "TODO: geometric":
-        n = 0
-        print(":TODO: geometric")
+    elif t == "geometric":
+        print_error("TODO: geometric")
     else:
-        print("Non-defined graph type.")
-        sys.exit()
+        print_error("Non-defined graph type.")
 
-    with open("data/problem_%s_%d_%dx%d.dat"%(t, n, w, h), "w") as file:
+    
+    with open("data/input/problem_%s_%d_%dx%d.dat"%(t, n, w, h), "w") as file:
         file.write("%d\n"%n)
         file.write("%d %d\n"%(w, h))
-        for [x,y],r in zip(positions, graph):
-            file.write("%d %d %d %s\n"%(x, y, len(r), " ".join(r)))
+        for r in graph:
+            file.write("%d %s\n"%(len(r), " ".join(r)))
+
+    if positions:
+        with open("data/known/problem_%s_%d_%dx%d.dat"%(t, n, w, h), "w") as file:
+            file.write("%d\n"%n)
+            file.write("%d %d\n"%(w, h))
+            for [x,y],r in zip(positions, graph):
+                file.write("%d %d %d %s\n"%(x, y, len(r), " ".join(r)))
