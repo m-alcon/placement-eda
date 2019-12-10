@@ -95,14 +95,14 @@ if __name__ == "__main__":
         print_error("Non-defined graph type.")
 
     
-    with open("data/input/problem_%s_%d_%dx%d.dat"%(t, n, w, h), "w") as file:
+    with open("data/input/problem_%s_%d_%dx%d.in"%(t, n, w, h), "w") as file:
         file.write("%d\n"%n)
         file.write("%d %d\n"%(w, h))
         for r in graph:
             file.write("%d %s\n"%(len(r), " ".join(r)))
 
     if positions:
-        with open("data/known/problem_%s_%d_%dx%d.dat"%(t, n, w, h), "w") as file:
+        with open("data/known/problem_%s_%d_%dx%d.in"%(t, n, w, h), "w") as file:
             file.write("%d\n"%n)
             file.write("%d %d\n"%(w, h))
             for [x,y],r in zip(positions, graph):

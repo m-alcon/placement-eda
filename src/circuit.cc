@@ -4,9 +4,9 @@ Circuit::Circuit (istream &input) {
     int m, v;
     input >> n >> w >> h;
     adjacency = Matrix(n);
-    //positions = Matrix(n, Vector(DIMS));
+    //positions = Matrix(n, Vector(DIMS)); // Read known positions
     for (int i = 0; i < n; ++i) {
-        //input >> positions[i][0] >> positions[i][1] >> m;
+        //input >> positions[i][0] >> positions[i][1] >> m; // Read known positions
         input >> m;
         adjacency[i] = Vector(m);
         for (int j = 0; j < m; ++j) {
@@ -17,9 +17,11 @@ Circuit::Circuit (istream &input) {
 }
 
 void Circuit::print(ostream &output) {
+    output << n << " " << adjacency.size() << endl;
     for (int i = 0; i < n; ++i) {
+        output << i << ")";
         for (int j = 0; j < adjacency[i].size(); ++j) {
-            output << adjacency[i][j] << " ";
+            output << " " << adjacency[i][j];
         }
         output << endl;
     }
