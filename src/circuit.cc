@@ -1,10 +1,16 @@
 #include "circuit.h"
 
+void Perturbation::set (const uint &u_, const uint &v_, const uint &cost_) {
+    u = u_;
+    v = v_;
+    cost = cost_;
+}
+
 Circuit::Circuit (istream &input) {
     int m, v;
     input >> n >> w >> h;
     adjacency = Matrix(n);
-    positions = Matrix(n, Vector(DIMS));
+    positions = Matrix(n, Vector(DIMS, 0));
     for (int i = 0; i < n; ++i) {
         //input >> positions[i][0] >> positions[i][1] >> m; // Read known positions
         input >> m;
@@ -14,7 +20,8 @@ Circuit::Circuit (istream &input) {
             adjacency[i][j] = v;
         }
     }
-    last_perturb = Perturbation(n+1, n+1, 0);
+    compute_cost();
+    last_perturb.set(n+1, n+1, INT32_MAX);
 }
 
 void Circuit::print(ostream &output) {
@@ -58,6 +65,7 @@ Matrix Circuit::generate_all_positions(mt19937 &generator) {
 void Circuit::place_randomly(mt19937 &generator) {
     Matrix all_poistions = generate_all_positions(generator);
     positions = Matrix(all_poistions.begin(), all_poistions.begin() + n);
+    compute_cost();
 }
 
 uint Circuit::euclidean2 (const int &i, const int &j) {
@@ -67,6 +75,15 @@ uint Circuit::euclidean2 (const int &i, const int &j) {
     }
     return distance;
 }
+
+int Circuit::size() {
+    return n;
+}
+
+uint Circuit::get_cost() {
+    return cost;
+}
+
 uint Circuit::manhattan (const int &i, const int &j) {
     uint distance = 0;
     for (int k = 0; k < DIMS; ++k) {
@@ -84,11 +101,30 @@ void Circuit::compute_cost() {
     }
 }
 
-float Circuit::perturb_cost() {
+uint Circuit::perturb(mt19937 &generator, uniform_int_distribution<uint> &distribution) {
+    last_perturb.u = distribution(generator);
+    last_perturb.v = distribution(generator);
+    while (last_perturb.u == last_perturb.v)
+        last_perturb.v = distribution(generator);
+    last_perturb.cost = cost;
+    cerr << last_perturb.cost << endl;
+    for (int i = 0; i < adjacency[last_perturb.u].size(); ++i) {
+        last_perturb.cost -= DISTANCE(last_perturb.u, adjacency[last_perturb.u][i]);
+        last_perturb.cost += DISTANCE(last_perturb.v, adjacency[last_perturb.u][i]);
+    }
+    cerr << last_perturb.cost << endl;
+    for (int i = 0; i < adjacency[last_perturb.v].size(); ++i) {
+        last_perturb.cost -= DISTANCE(last_perturb.v, adjacency[last_perturb.v][i]);
+        last_perturb.cost += DISTANCE(last_perturb.u, adjacency[last_perturb.v][i]);
+    }
+    cerr << last_perturb.cost << endl;
 }
 
 void Circuit::apply_perturb() {
-
+    if (last_perturb.u < n) {
+        cost = last_perturb.cost;
+        swap(positions[last_perturb.u], positions[last_perturb.v]);
+    }
  }
 
 // void Circuit::place_cells(float temperature) {
