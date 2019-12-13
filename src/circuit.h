@@ -23,26 +23,25 @@ class Perturbation {
 
 class Circuit {
     public:
-        // Circuit (const uint &n_nodes)   
-        //     : n(n_nodes), 
-        //       adjacency(n_nodes, Vector (n_nodes)) {}
-        Circuit (istream &input);
+        Circuit (const bool &known_positions, istream &input);
         void print(ostream &output);
         void graphviz(ostream &output);
-        //void place_cells(float temperature);
         void place_randomly(mt19937 &generator);
-        uint perturb(mt19937 &generator, uniform_int_distribution<uint> &distribution);
-        int size();
+        uint perturb(mt19937 &generator, uniform_int_distribution<uint> &size_distr, uniform_int_distribution<uint> &nodes_distr);
+        uint size();
+        uint nodes();
+        uint max_dimension();
         uint get_cost();
         void apply_perturb();
+        void compute_cost();
     private:
         uint n, w, h;
         uint cost = INT32_MAX;
-        Matrix adjacency, positions;
+        Matrix adjacency, positions, all_positions;
         Perturbation last_perturb;
 
-        Matrix generate_all_positions(mt19937 &generator);
+        void initialize_all_positions();
         uint euclidean2 (const int &i, const int &j);
         uint manhattan (const int &i, const int &j);
-        void compute_cost();
+        
 };

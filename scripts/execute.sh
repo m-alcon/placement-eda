@@ -1,5 +1,6 @@
 #!/bin/bash
 
-./bin/placement < ./data/input/problem_spiral_25_5x5.in > ./data/output/adjacency/problem_spiral_25_5x5.out
+name="problem_random_25_5x5"
+./bin/placement < ./data/input/${name}.in > ./data/output/graphviz/${name}.out
 wait $!
-./scripts/visualize.sh data/output/adjacency/problem_spiral_25_5x5.out data/output/img/problem_spiral_25_5x5.png
+./scripts/visualize.sh data/output/graphviz/${name}.out data/output/img/${name}.png

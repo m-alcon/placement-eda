@@ -6,18 +6,29 @@ void Perturbation::set (const uint &u_, const uint &v_, const uint &cost_) {
     cost = cost_;
 }
 
-Circuit::Circuit (istream &input) {
+Circuit::Circuit (const bool &known_positions, istream &input) {
     int m, v;
     input >> n >> w >> h;
     adjacency = Matrix(n);
-    positions = Matrix(n, Vector(DIMS, 0));
-    for (int i = 0; i < n; ++i) {
-        //input >> positions[i][0] >> positions[i][1] >> m; // Read known positions
-        input >> m;
-        adjacency[i] = Vector(m);
-        for (int j = 0; j < m; ++j) {
-            input >> v;
-            adjacency[i][j] = v;
+    positions = Matrix(w*h, Vector(DIMS, 0));
+    if (not known_positions) {
+        for (int i = 0; i < n; ++i) {
+            input >> m;
+            adjacency[i] = Vector(m);
+            for (int j = 0; j < m; ++j) {
+                input >> v;
+                adjacency[i][j] = v;
+            }
+        }
+        initialize_all_positions();
+    } else {
+        for (int i = 0; i < n; ++i) {
+            input >> positions[i][0] >> positions[i][1] >> m; // Read known positions
+            adjacency[i] = Vector(m);
+            for (int j = 0; j < m; ++j) {
+                input >> v;
+                adjacency[i][j] = v;
+            }
         }
     }
     compute_cost();
@@ -50,21 +61,18 @@ void Circuit::graphviz(ostream &output) {
     output << "}" << endl;
 }
 
-Matrix Circuit::generate_all_positions(mt19937 &generator) {
-    Matrix all_positions = Matrix(w*h, Vector(DIMS));
+void Circuit::initialize_all_positions() {
     for (int i = 0; i < h; ++i) {
         for (int j = 0; j < w; ++j) {
-            all_positions[i*w + j] = {i,j};
+            positions[i*w + j] = {i,j};
         }
     }
-    shuffle(all_positions.begin(), all_positions.end() , generator);
-    return all_positions;
+    
 }
 
 
 void Circuit::place_randomly(mt19937 &generator) {
-    Matrix all_poistions = generate_all_positions(generator);
-    positions = Matrix(all_poistions.begin(), all_poistions.begin() + n);
+    shuffle(positions.begin(), positions.end() , generator);
     compute_cost();
 }
 
@@ -76,8 +84,16 @@ uint Circuit::euclidean2 (const int &i, const int &j) {
     return distance;
 }
 
-int Circuit::size() {
+uint Circuit::size() {
+    return w*h;
+}
+
+uint Circuit::nodes() {
     return n;
+}
+
+uint Circuit::max_dimension() {
+    return max(w,h);
 }
 
 uint Circuit::get_cost() {
@@ -89,6 +105,7 @@ uint Circuit::manhattan (const int &i, const int &j) {
     for (int k = 0; k < DIMS; ++k) {
         distance += abs(positions[j][k] -  positions[i][k]);
     }
+    //cerr << "d([" << positions[i][0] << " " << positions[i][1] << "], [" << positions[j][0] << " " << positions[j][1] << "]) = " << distance << endl;
     return distance;
 }
 
@@ -101,35 +118,41 @@ void Circuit::compute_cost() {
     }
 }
 
-uint Circuit::perturb(mt19937 &generator, uniform_int_distribution<uint> &distribution) {
-    last_perturb.u = distribution(generator);
-    last_perturb.v = distribution(generator);
+uint Circuit::perturb(mt19937 &generator, uniform_int_distribution<uint> &size_distr, uniform_int_distribution<uint> &nodes_distr) {
+    last_perturb.u = nodes_distr(generator);
+    last_perturb.v = size_distr(generator);
     while (last_perturb.u == last_perturb.v)
-        last_perturb.v = distribution(generator);
+        last_perturb.v = size_distr(generator);
     last_perturb.cost = cost;
-    cerr << last_perturb.cost << endl;
-    for (int i = 0; i < adjacency[last_perturb.u].size(); ++i) {
-        last_perturb.cost -= DISTANCE(last_perturb.u, adjacency[last_perturb.u][i]);
-        last_perturb.cost += DISTANCE(last_perturb.v, adjacency[last_perturb.u][i]);
+    //cerr << last_perturb.u << " - " << last_perturb.v << endl;
+    //cerr << positions[last_perturb.u][0] << "," << positions[last_perturb.u][1] << "  " << positions[last_perturb.v][0] << "," << positions[last_perturb.v][1] << endl;
+    
+    uint count_edge = 2;
+    //if (adjacency[last_perturb.u].size() == 0 or adjacency[last_perturb.v].size() == 0)
+    //   count_edge = 1;
+    
+    for (uint s : adjacency[last_perturb.u]) {
+        if (last_perturb.v != s) {
+            last_perturb.cost += count_edge*DISTANCE(last_perturb.v, s);
+            last_perturb.cost -= count_edge*DISTANCE(last_perturb.u, s);
+        }            
     }
-    cerr << last_perturb.cost << endl;
-    for (int i = 0; i < adjacency[last_perturb.v].size(); ++i) {
-        last_perturb.cost -= DISTANCE(last_perturb.v, adjacency[last_perturb.v][i]);
-        last_perturb.cost += DISTANCE(last_perturb.u, adjacency[last_perturb.v][i]);
+    if (last_perturb.v < n) {
+        for (uint t : adjacency[last_perturb.v]) {
+            if (last_perturb.u != t) {
+                last_perturb.cost += count_edge*DISTANCE(last_perturb.u, t);
+                last_perturb.cost -= count_edge*DISTANCE(last_perturb.v, t);
+            }
+        }
     }
-    cerr << last_perturb.cost << endl;
+    //cerr << adjacency[last_perturb.u].size() << " " << adjacency[last_perturb.v].size() << " - " << last_perturb.cost << " " << cost << endl;
+    return last_perturb.cost;
 }
 
 void Circuit::apply_perturb() {
-    if (last_perturb.u < n) {
-        cost = last_perturb.cost;
+    if (last_perturb.cost != INT32_MAX) {
         swap(positions[last_perturb.u], positions[last_perturb.v]);
+        cost = last_perturb.cost;
+        //cerr << last_perturb.cost << " == " << cost << endl;
     }
  }
-
-// void Circuit::place_cells(float temperature) {
-//     place_randomly();
-//     while (temperature > min_temperature) {
-        
-//     }
-// }

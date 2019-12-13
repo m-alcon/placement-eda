@@ -57,7 +57,9 @@ def generate_random(w, h, n):
     for i in range(n):
         for j in range(n):
             if i == j: continue
-            matrix[i][j] = np.random.choice([0,1], 1, p=[1-p, p])
+            choice = np.random.choice([0,1], 1, p=[1-p, p])
+            matrix[i][j] = choice
+            matrix[j][i] = choice
     for i in range(n):
         graph.append([str(j) for j in range(n) if matrix[i][j]])
     # positions = all_positions(w,h)
@@ -85,10 +87,10 @@ if __name__ == "__main__":
         if n: print_warning("Parameter NCELLS is not going to be used.")
         n, graph, positions = generate_mesh(w, h)
     elif t == "random":
-        if n <= w*h:
-            n, graph = generate_random(w, h, n)
-        else:
+        if n and n > w*h:
             print_error("Not enough space for all the nodes (width*heigt < NCELLS).")
+        else:
+            n, graph = generate_random(w, h, n)
     elif t == "geometric":
         print_error("TODO: geometric")
     else:
@@ -102,7 +104,7 @@ if __name__ == "__main__":
             file.write("%d %s\n"%(len(r), " ".join(r)))
 
     if positions:
-        with open("data/known/problem_%s_%d_%dx%d.in"%(t, n, w, h), "w") as file:
+        with open("data/input/known_%s_%d_%dx%d.in"%(t, n, w, h), "w") as file:
             file.write("%d\n"%n)
             file.write("%d %d\n"%(w, h))
             for [x,y],r in zip(positions, graph):

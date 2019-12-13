@@ -5,10 +5,15 @@ BIN = ../bin/
 SRC = $(wildcard *.cc)
 TAR = $(SRC:.cc=.o)
 
-.PHONY: all program
+.PHONY: all
 
-all: $(TAR)
+all: placement visualization
+
+placement: placement.o circuit.o
 	$(CXX) -o $(BIN)placement $^
+
+visualization: visualization.o circuit.o
+	$(CXX) -o $(BIN)visualization $^
     
 %.o: %.cc
 	$(CXX) -c $^ -o $@
