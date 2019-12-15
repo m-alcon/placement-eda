@@ -53,7 +53,7 @@ def generate_random(w, h, n):
     if not n:
         n = w*h
     graph, matrix= [], np.zeros((n,n))
-    p = 1/n
+    p = 3/n
     for i in range(n):
         for j in range(n):
             if i == j: continue

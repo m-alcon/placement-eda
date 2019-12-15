@@ -1,6 +1,6 @@
 #!/bin/bash
 
-name="problem_random_25_5x5"
-./bin/placement < ./data/input/${name}.in > ./data/output/graphviz/${name}.out
+name=$1
+./bin/placement $name $2 $3
 wait $!
 ./scripts/visualize.sh data/output/graphviz/${name}.out data/output/img/${name}.png
