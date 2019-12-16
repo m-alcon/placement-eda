@@ -62,9 +62,7 @@ def generate_random(w, h, n):
             matrix[j][i] = choice
     for i in range(n):
         graph.append([str(j) for j in range(n) if matrix[i][j]])
-    # positions = all_positions(w,h)
-    # np.random.shuffle(positions)
-    return n, graph #, positions[:n]
+    return n, graph
 
 def generate_geometric(w, h, n):
     return n, []
@@ -75,8 +73,7 @@ if __name__ == "__main__":
     parser.add_argument("width", type=int, help="Width of the surface")
     parser.add_argument("height", type=int, help="Height of the surface")
     parser.add_argument("-n", "--ncells", type=int, help="Number of cells")
-    parser.add_argument("-t", "--type", choices=["spiral","mesh","random","geometric"], help="Type of the graph")
-    #parser.add_argument("-f","--file", help="")
+    parser.add_argument("-t", "--type", choices=["spiral","mesh","random"], help="Type of the graph")
     args = parser.parse_args()
     n, w, h, t = args.ncells, args.width, args.height, args.type
     graph, positions = [], []
@@ -91,8 +88,6 @@ if __name__ == "__main__":
             print_error("Not enough space for all the nodes (width*heigt < NCELLS).")
         else:
             n, graph = generate_random(w, h, n)
-    elif t == "geometric":
-        print_error("TODO: geometric")
     else:
         print_error("Non-defined graph type.")
 

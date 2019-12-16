@@ -28,9 +28,8 @@
 
 # Executables
 *.exe
-*.out
 *.app
 
 # Extra
 bin/
-
+data/sequence/
