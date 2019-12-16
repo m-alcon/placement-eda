@@ -8,11 +8,10 @@ The following script generates the data and saves it in `data/input/` folder.
 ./scripts/generate_data -t TYPE [-n NODES] W H
 ```
 
-**TYPE** can be *spiral*, *mesh* or *random*.
-
-**NODES** is the number of nodes of the data you want to generate.
-
-**W** and **H** are the width and the height of the 2D surface.
+Parameters:
++ **TYPE** can be *spiral*, *mesh* or *random*.
++ **NODES** is the number of nodes of the data you want to generate.
++ **W** and **H** are the width and the height of the 2D surface.
 
 
 Generated files has the following name: `problem_TYPE_NODES_WxH.in`.
@@ -31,11 +30,10 @@ The following script creates two file:
 ./bin/execute.sh NAME EQUILIBRIUM IT_MAX
 ```
 
-**NAME** is the name of the problem's file (`problem_TYPE_NODES_WxH`).
-
-**EQUILIBRIUM** is the consecutive number of iterations the algorithm can do without improving the solution inside the temperature loop.
-
-**IT_MAX** is the maximum number of iterations the algorithm can do inside the temperature loop.
+Parameters:
++ **NAME** is the name of the problem's file (`problem_TYPE_NODES_WxH`).
++ **EQUILIBRIUM** is the consecutive number of iterations the algorithm can do without improving the solution inside the temperature loop.
++ **IT_MAX** is the maximum number of iterations the algorithm can do inside the temperature loop.
 
 
 ### Computing the cost and visualize the known solutions
@@ -45,4 +43,5 @@ The following script creates two file:
 ```
 ./bin/execute_known.sh NAME
 ```
-**NAME** is the name of the known problem's file (`known_TYPE_NODES_WxH`).
+Parameters:
++ **NAME** is the name of the known problem's file (`known_TYPE_NODES_WxH`).
