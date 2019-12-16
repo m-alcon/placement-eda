@@ -56,7 +56,7 @@ int main (int argc, char *argv[]) {
         uint it_max = atoi(argv[3]);
         Circuit c = Circuit(false, input);
         simulated_annealing(0.8, 0.05, 0.9, it_max, equilibrium, c);
-        //c.graphviz(output);
+        c.graphviz(output);
     } else {
         Circuit c = Circuit(false, cin);
         simulated_annealing(t_0, t_min, alpha, c.max_dimension()*pow(c.size(), 3), pow(c.size(),3), c);
