@@ -18,9 +18,9 @@ void simulated_annealing(const float &t_0, const float &t_min, const float &alph
     float t = t_0;
     c.place_randomly(generator);
     //save_state(saved, c);
+    cerr << "T cost" << endl;
     while (t > t_min) {
         uint equilibrium = equilibrium_base*(1-t+t_min);
-        cerr << t << " " << equilibrium << " " << it_max;
         int it = 0;
         int equilibrium_counter = 0;
         while (equilibrium_counter < equilibrium and it < it_max) {
@@ -39,10 +39,10 @@ void simulated_annealing(const float &t_0, const float &t_min, const float &alph
             }
             ++it;
         }
-        cerr << " " << it << " " << c.get_cost() << endl;
+        cerr << t << " " << c.get_cost() << endl;
         t = alpha * t;
     }
-    cerr << c.get_cost() << endl;
+    cerr << "Final cost: " << c.get_cost() << endl;
 }
 
 int main (int argc, char *argv[]) {
