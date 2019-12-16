@@ -36,7 +36,7 @@ Parameters:
 + **IT_MAX** is the maximum number of iterations the algorithm can do inside the temperature loop.
 
 
-### Computing the cost and visualize the known solutions
+### Compute the cost and visualize the known solution
 The following script creates two file:
 + One with the solution as a *graphviz* input inside `data/output/graphviz/` folder named `known_TYPE_NODES_WxH.out`.
 + The other as an image inside `data/output/img/` named `known_TYPE_NODES_WxH.png`.
